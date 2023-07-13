@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-prod-deployment
+  namespace: prod
+  labels:
+    app: insurance-prod-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: insurance-prod-app
+  template:
+    metadata:
+      labels:
+        app: insurance-prod-app
+    spec:
+      containers:
+      - name: insurance-prod-app
+        image: krishna21290/insurance-application:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: insurance-prod-service
+  namespace: prod
+spec:
+  selector:
+    app: insurance-prod-app
+  type: NodePort
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8081
+    protocol: TCP
+    nodePort: 31002
